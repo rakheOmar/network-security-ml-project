@@ -1,0 +1,21 @@
+[project]
+name = "network-security"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "certifi>=2025.10.5",
+    "dagshub>=0.6.3",
+    "fastapi>=0.118.0",
+    "mlflow>=3.4.0",
+    "numpy>=2.3.3",
+    "pandas>=2.3.3",
+    "pymongo[srv]>=4.15.2",
+    "python-dotenv>=1.1.1",
+    "python-multipart>=0.0.20",
+    "pyyaml>=6.0.3",
+    "ruff>=0.14.0",
+    "scikit-learn>=1.7.2",
+    "uvicorn>=0.37.0",
+]
