@@ -1,8 +1,10 @@
-import sys
-
 from src.components.data_ingestion import DataIngestion
+from src.components.data_transformation import DataTransformation
+from src.components.data_validation import DataValidation
 from src.entity.config_entity import (
     DataIngestionConfig,
+    DataTransformationConfig,
+    DataValidationConfig,
     TrainingPipelineConfig,
 )
 from src.exception.exception import NetworkSecurityException
@@ -17,22 +19,22 @@ if __name__ == "__main__":
         dataingestionartifact = data_ingestion.initiate_data_ingestion()
         logging.info("Data Initiation Completed")
         print(dataingestionartifact)
-        # data_validation_config = DataValidationConfig(trainingpipelineconfig)
-        # data_validation = DataValidation(dataingestionartifact, data_validation_config)
-        # logging.info("Initiate the data Validation")
-        # data_validation_artifact = data_validation.initiate_data_validation()
-        # logging.info("data Validation Completed")
-        # print(data_validation_artifact)
-        # data_transformation_config = DataTransformationConfig(trainingpipelineconfig)
-        # logging.info("data Transformation started")
-        # data_transformation = DataTransformation(
-        #     data_validation_artifact, data_transformation_config
-        # )
-        # data_transformation_artifact = (
-        #     data_transformation.initiate_data_transformation()
-        # )
-        # print(data_transformation_artifact)
-        # logging.info("data Transformation completed")
+        data_validation_config = DataValidationConfig(trainingpipelineconfig)
+        data_validation = DataValidation(dataingestionartifact, data_validation_config)
+        logging.info("Initiate the data Validation")
+        data_validation_artifact = data_validation.initiate_data_validation()
+        logging.info("data Validation Completed")
+        print(data_validation_artifact)
+        data_transformation_config = DataTransformationConfig(trainingpipelineconfig)
+        logging.info("data Transformation started")
+        data_transformation = DataTransformation(
+            data_validation_artifact, data_transformation_config
+        )
+        data_transformation_artifact = (
+            data_transformation.initiate_data_transformation()
+        )
+        print(data_transformation_artifact)
+        logging.info("data Transformation completed")
 
         # logging.info("Model Training sstared")
         # model_trainer_config = ModelTrainerConfig(trainingpipelineconfig)
