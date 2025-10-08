@@ -47,3 +47,5 @@ artifacts/
 .env
 
 .ruff_cache
+
+mlruns/

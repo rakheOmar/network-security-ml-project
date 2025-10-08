@@ -33,14 +33,14 @@ class DataTransformation:
                 data_transformation_config
             )
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     @staticmethod
     def read_data(file_path) -> pd.DataFrame:
         try:
             return pd.read_csv(file_path)
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     def get_data_transformer_object(cls) -> Pipeline:
         logging.info(
@@ -54,7 +54,7 @@ class DataTransformation:
             processor: Pipeline = Pipeline([("imputer", imputer)])
             return processor
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     def initiate_data_transformation(self) -> DataTransformationArtifact:
         logging.info(
@@ -120,4 +120,4 @@ class DataTransformation:
             return data_transformation_artifact
 
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore

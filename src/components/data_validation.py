@@ -26,14 +26,14 @@ class DataValidation:
             self.data_validation_config = data_validation_config
             self._schema_config = read_yaml_file(SCHEMA_FILE_PATH)
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     @staticmethod
     def read_data(file_path) -> pd.DataFrame:
         try:
             return pd.read_csv(file_path)
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     def validate_number_of_columns(self, dataframe: pd.DataFrame) -> bool:
         try:
@@ -44,9 +44,9 @@ class DataValidation:
                 return True
             return False
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
-    def detect_dataset_drift(self, base_df, current_df, threshold=0.05) -> bool:
+    def detect_dataset_drift(self, base_df, current_df, threshold=0.05) -> bool:  # type: ignore
         try:
             status = True
             report = {}
@@ -54,7 +54,7 @@ class DataValidation:
                 d1 = base_df[column]
                 d2 = current_df[column]
                 is_same_dist = ks_2samp(d1, d2)
-                if threshold <= is_same_dist.pvalue:
+                if threshold <= is_same_dist.pvalue:  # type: ignore
                     is_found = False
                 else:
                     is_found = True
@@ -62,7 +62,7 @@ class DataValidation:
                 report.update(
                     {
                         column: {
-                            "p_value": float(is_same_dist.pvalue),
+                            "p_value": float(is_same_dist.pvalue),  # type: ignore
                             "drift_status": is_found,
                         }
                     }
@@ -72,7 +72,7 @@ class DataValidation:
             os.makedirs(dir_path, exist_ok=True)
             write_yaml_file(file_path=drift_report_file_path, content=report)
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     def initiate_data_validation(self) -> DataValidationArtifact:
         try:
@@ -113,10 +113,10 @@ class DataValidation:
                 validation_status=status,
                 valid_train_file_path=self.data_ingestion_artifact.trained_file_path,
                 valid_test_file_path=self.data_ingestion_artifact.test_file_path,
-                invalid_train_file_path=None,
-                invalid_test_file_path=None,
+                invalid_train_file_path="",
+                invalid_test_file_path="",
                 drift_report_file_path=self.data_validation_config.drift_report_file_path,
             )
             return data_validation_artifact
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore

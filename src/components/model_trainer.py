@@ -1,6 +1,9 @@
 import os
 import sys
 
+import mlflow
+import mlflow.sklearn
+from mlflow.models import infer_signature
 from sklearn.ensemble import (
     AdaBoostClassifier,
     GradientBoostingClassifier,
@@ -33,7 +36,28 @@ class ModelTrainer:
             self.model_trainer_config = model_trainer_config
             self.data_transformation_artifact = data_transformation_artifact
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
+
+    def track_mlflow(self, best_model, classificationmetric, X_data):
+        with mlflow.start_run():
+            f1_score = classificationmetric.f1_score
+            precision_score = classificationmetric.precision_score
+            recall_score = classificationmetric.recall_score
+
+            mlflow.log_metric("f1_score", f1_score)
+            mlflow.log_metric("precision", precision_score)
+            mlflow.log_metric("recall_score", recall_score)
+
+            predictions = best_model.predict(X_data)
+
+            signature = infer_signature(X_data, predictions)
+
+            mlflow.sklearn.log_model(  # type: ignore
+                sk_model=best_model,
+                artifact_path="model",
+                signature=signature,
+                input_example=X_data[:5],
+            )
 
     def train_model(self, X_train, y_train, x_test, y_test):
         models = {
@@ -59,7 +83,7 @@ class ModelTrainer:
                 "learning_rate": [0.1, 0.01, 0.05, 0.001],
                 "subsample": [0.6, 0.7, 0.75, 0.85, 0.9],
                 "criterion": ["squared_error", "friedman_mse"],
-                "max_features": ["auto", "sqrt", "log2"],
+                "max_features": ["sqrt", "log2"],
                 "n_estimators": [8, 16, 32, 64, 128, 256],
             },
             "Logistic Regression": {},
@@ -88,10 +112,16 @@ class ModelTrainer:
             y_true=y_train, y_pred=y_train_pred
         )
 
+        # Track training metrics with MLflow
+        self.track_mlflow(best_model, classification_train_metric, X_train)
+
         y_test_pred = best_model.predict(x_test)
         classification_test_metric = get_classification_score(
             y_true=y_test, y_pred=y_test_pred
         )
+
+        # Track test metrics with MLflow
+        self.track_mlflow(best_model, classification_test_metric, x_test)
 
         preprocessor = load_object(
             file_path=self.data_transformation_artifact.transformed_object_file_path
@@ -103,7 +133,9 @@ class ModelTrainer:
         os.makedirs(model_dir_path, exist_ok=True)
 
         Network_Model = NetworkModel(preprocessor=preprocessor, model=best_model)
-        save_object(self.model_trainer_config.trained_model_file_path, obj=NetworkModel)
+        save_object(
+            self.model_trainer_config.trained_model_file_path, obj=Network_Model
+        )
         save_object("final_model/model.pkl", best_model)
 
         model_trainer_artifact = ModelTrainerArtifact(
@@ -137,4 +169,4 @@ class ModelTrainer:
             return model_trainer_artifact
 
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore

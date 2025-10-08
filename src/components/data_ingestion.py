@@ -23,7 +23,7 @@ class DataIngestion:
             if not MONGO_DB_URL:
                 raise ValueError("MONGODB_URI is not set")
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     def export_collection_as_dataframe(self) -> pd.DataFrame:
         client = None
@@ -51,7 +51,7 @@ class DataIngestion:
 
             return df
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
         finally:
             if client:
                 client.close()
@@ -66,7 +66,7 @@ class DataIngestion:
             dataframe.to_csv(feature_store_file_path, index=False, header=True)
             return dataframe
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     def split_data_as_train_test(self, dataframe: pd.DataFrame) -> None:
         try:
@@ -102,7 +102,7 @@ class DataIngestion:
                 self.data_ingestion_config.testing_file_path, index=False, header=True
             )
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
@@ -115,4 +115,4 @@ class DataIngestion:
             )
             return dataingestionartifact
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            raise NetworkSecurityException(e, sys)  # type: ignore
