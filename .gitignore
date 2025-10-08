@@ -42,3 +42,8 @@ Thumbs.db
 models/*.pkl
 models/*.h5
 artifacts/
+
+# Enviornment Variables
+.env
+
+.ruff_cache
