@@ -108,7 +108,7 @@ class DataTransformation:
             )
 
             save_object(
-                "src/models/preprocessor.pkl",
+                "final_model/preprocessor.pkl",
                 preprocessor_object,
             )
 
